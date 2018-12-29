@@ -13,8 +13,7 @@ CREATE TABLE `competicion`
   PRIMARY KEY(`id`)
 )  ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 LOCK TABLES `competicion` WRITE;
-INSERT INTO `
-competicion`
+INSERT INTO `competicion`
 VALUES
     (1, 'Cual es la mejor pelicula?', NULL, NULL, NULL),
     (2, 'Que drama te hizo llorar mas?', 8, NULL, NULL),
@@ -36,5 +35,6 @@ CREATE TABLE `votos_pelicula`
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `competencia_id` int(11) NOT NULL,
   `pelicula_id` int(11) NOT NULL,
+  `cantidad` int(11),
   PRIMARY KEY(`id`)
 )  ENGINE=InnoDB DEFAULT CHARSET=UTF8;

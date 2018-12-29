@@ -15,7 +15,13 @@ app.get('/competencias/:id/peliculas',function(req,res){
     var id = req.params.id;
     controlador.obtenerOpciones(id, res);
 });
-
+app.post('/competencias/:id/voto',function(req,res){
+    controlador.votar(req,res);
+})
+app.get('/competencias/:id/resultados',function(req,res){
+    var id = req.params.id;
+    controlador.obtenerResultados(id, res);
+});
 
 var puerto = '8080';
 
