@@ -118,17 +118,57 @@ function obtenerResultados(id, res) {
             resultados: resp
           };
           res.send(data);
-                }
+        }
       });
     } else {
       return res.status(404).json("Competencia no encontrada");
     }
   });
 }
+function crearCompetencia(params, res) {
+  var titulo = params.nombre;
+  var verifComp = "SELECT * FROM competicion where nombre='" + titulo + "';";
+  conDb.query(verifComp, function(error, resultVerif) {
+    if (error) {
+      return res.status(500);
+    }
+    if (resultVerif.length != 0) {
+      return res.status(422).json("La competencia ya existe");
+    }
+    var sql = "INSERT INTO competicion (nombre) values ('" + titulo + "');";
+    conDb.query(sql, function(error, resp) {
+      if (error) {
+        return res.status(500);
+      }
+      res.status(200);
+    });
+  });
+}
+function eliminarCompetencia(id, res) {
+  res.status(404);
+}
+function eliminarVotos(id, res) {
+  var verifComp = "SELECT * FROM competicion where id=" + id + ";";
+  conDb.query(verifComp, function(error, resultVerif) {
+    console.log(resultVerif)
+    if (resultVerif.length == 0) {
+      return res.status(404).json("La competencia no existe");
+    }
+    sqlEliminar = "DELETE FROM votos_pelicula where competencia_id=" + id + ";";
+    conDb.query(sqlEliminar, function(error, resp) {
+      if (error) {
+        return res.status(500);
+      }
+      res.status(200);
+    });
+  });
+}
 module.exports = {
   obtenerCompetencias: obtenerCompetencias,
   obtenerOpciones: obtenerOpciones,
   votar: votar,
-  obtenerResultados: obtenerResultados
+  obtenerResultados: obtenerResultados,
+  crearCompetencia: crearCompetencia,
+  eliminarCompetencia: eliminarCompetencia,
+  eliminarVotos: eliminarVotos
 };
-//SELECT titulo, cantidad FROM votos_pelicula vot JOIN pelicula p ON vot.pelicula_id = p.id order by cantidad DESC LIMIT 3;

@@ -26,15 +26,15 @@ UNLOCK TABLES;
 -- (2, '¿Qué drama te hizo llorar más?'),
 -- (3, '¿Cuál es la peli más bizarra?');
 
-USE `competencias`;
+-- USE `competencias`;
 
-DROP TABLE IF EXISTS `votos_pelicula`;
+-- DROP TABLE IF EXISTS `votos_pelicula`;
 
-CREATE TABLE `votos_pelicula`
-(
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `competencia_id` int(11) NOT NULL,
-  `pelicula_id` int(11) NOT NULL,
-  `cantidad` int(11),
-  PRIMARY KEY(`id`)
-)  ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+-- CREATE TABLE `votos_pelicula`
+-- (
+--   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+--   `competencia_id` int(11) NOT NULL,
+--   `pelicula_id` int(11) NOT NULL,
+--   `cantidad` int(11),
+--   PRIMARY KEY(`id`)
+-- )  ENGINE=InnoDB DEFAULT CHARSET=UTF8;

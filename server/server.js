@@ -22,7 +22,17 @@ app.get('/competencias/:id/resultados',function(req,res){
     var id = req.params.id;
     controlador.obtenerResultados(id, res);
 });
-
+app.post('/competencias', function(req,res){
+    controlador.crearCompetencia(req.body,res);
+});
+app.delete('/competencias/:id',function(req,res){
+    var id = req.params.id;
+    controlador.eliminarCompetencia(id,res);
+})
+app.delete('/competencias/:id/votos',function(req,res){
+    var id = req.params.id;
+    controlador.eliminarVotos(id,res);
+})
 var puerto = '8080';
 
 app.listen(puerto, function () {

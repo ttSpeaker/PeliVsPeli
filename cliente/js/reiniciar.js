@@ -9,10 +9,12 @@ $(function() {
 	$("#formCompetencia").ajaxForm({url: server + '/competencias/'+idCompetencia+'/votos', type: 'delete', 
 		// En caso de éxito, se redirige a index.html
 		success: function(res) {
+			console.log('succes')
 			window.location.replace("./index.html?exito=True");
 		},
 		// En caso de error, se muestra el mensaje de error en el contenedor para tal fin
 		error: function(response, status, xhr) {
+			console.log('error')
 			$("#mensajeDeError").text(response.responseText);
 		}
 	});
