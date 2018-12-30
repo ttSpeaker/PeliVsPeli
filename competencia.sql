@@ -9,7 +9,7 @@ CREATE TABLE `competicion`
   `nombre` varchar(70) NOT NULL DEFAULT '',
   `genero_id` int(11),
   `actor_id` int(11),
-  `director` varchar(70),
+  `director` int(11),
   PRIMARY KEY(`id`)
 )  ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 LOCK TABLES `competicion` WRITE;
@@ -20,7 +20,7 @@ VALUES
     (3, 'Cual es la peli de terror mas bizarra?', 10, NULL, NULL),
     (4, 'Cual es la mejor peli con Julia Roberts?', NULL, 1044, NULL),
     (5, 'Cual es la mejor peli con De Niro?', NULL, 1702, NULL),
-    (6, 'Cual es la mejor peli de Spielberg?', NULL, NULL, 'Spielberg');
+    (6, 'Cual es la mejor peli de Spielberg?', NULL, NULL, 3364);
 UNLOCK TABLES;
 -- (1, '¿Cual es la mejor película?'),
 -- (2, '¿Qué drama te hizo llorar más?'),

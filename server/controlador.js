@@ -7,7 +7,7 @@ function obtenerCompetencias(req, res) {
 }
 function competenciaQuery(data) {
   var sql =
-    "SELECT pelicula.id, pelicula.titulo, pelicula.poster FROM pelicula JOIN actor_pelicula ON pelicula.id = actor_pelicula.pelicula_id JOIN actor on actor_pelicula.actor_id = actor.id";
+    "SELECT pelicula.id, pelicula.titulo, pelicula.poster FROM pelicula JOIN actor_pelicula ON pelicula.id = actor_pelicula.pelicula_id JOIN actor on actor_pelicula.actor_id = actor.id JOIN director_pelicula dp ON dp.pelicula_id = pelicula.id";
   var paramsCount = false;
   if (data.genero_id) {
     sql = sql.concat(" WHERE genero_id =" + data.genero_id);
@@ -28,7 +28,7 @@ function competenciaQuery(data) {
     } else {
       sql = sql.concat(" WHERE");
     }
-    sql = sql.concat(" director LIKE '%" + data.director + "%'");
+    sql = sql.concat(" dp.director_ID =" + data.director);
     paramsCount = true;
   }
   sql = sql.concat(" ORDER BY rand() LIMIT 2;");
@@ -127,7 +127,10 @@ function obtenerResultados(id, res) {
 }
 function crearCompetencia(params, res) {
   var titulo = params.nombre;
-  var verifComp = "SELECT * FROM competicion where nombre='" + titulo + "';";
+  var genero = params.genero;
+  var actor = params.actor;
+  var director = params.director;
+  var verifComp = "SELECT * FROM competicion where nombre='" + titulo + "'";
   conDb.query(verifComp, function(error, resultVerif) {
     if (error) {
       return res.status(500);
@@ -135,7 +138,26 @@ function crearCompetencia(params, res) {
     if (resultVerif.length != 0) {
       return res.status(422).json("La competencia ya existe");
     }
-    var sql = "INSERT INTO competicion (nombre) values ('" + titulo + "');";
+    var sql =
+      "INSERT INTO competicion (nombre, genero_id, actor_id, director) values ('" +
+      titulo +
+      "'";
+    if (genero != 0) {
+      sql = sql.concat(", " + genero);
+    } else {
+      sql = sql.concat(", NULL");
+    }
+    if (actor != 0) {
+      sql = sql.concat(", " + actor);
+    } else {
+      sql = sql.concat(", NULL");
+    }
+    if (director != 0) {
+      sql = sql.concat(", " + director);
+    } else {
+      sql = sql.concat(", NULL");
+    }
+    sql = sql.concat(");");
     conDb.query(sql, function(error, resp) {
       if (error) {
         return res.status(500);
@@ -150,7 +172,6 @@ function eliminarCompetencia(id, res) {
 function eliminarVotos(id, res) {
   var verifComp = "SELECT * FROM competicion where id=" + id + ";";
   conDb.query(verifComp, function(error, resultVerif) {
-    console.log(resultVerif)
     if (resultVerif.length == 0) {
       return res.status(404).json("La competencia no existe");
     }
@@ -163,6 +184,34 @@ function eliminarVotos(id, res) {
     });
   });
 }
+function obtenerGeneros(req, res) {
+  sql = "SELECT * FROM genero ORDER BY nombre;";
+  conDb.query(sql, function(error, resp) {
+    if (error) {
+      return res.status(500);
+    }
+    res.send(resp);
+  });
+}
+function obtenerDirectores(req, res) {
+  sql =
+    "SELECT dp.director_id as id, p.director as nombre FROM pelicula p JOIN director_pelicula dp ON dp.pelicula_id = p.id ORDER BY nombre;";
+  conDb.query(sql, function(error, resp) {
+    if (error) {
+      return res.status(500);
+    }
+    res.send(resp);
+  });
+}
+function obtenerActores(req, res) {
+  sql = "SELECT * FROM actor ORDER BY nombre;";
+  conDb.query(sql, function(error, resp) {
+    if (error) {
+      return res.status(500);
+    }
+    res.send(resp);
+  });
+}
 module.exports = {
   obtenerCompetencias: obtenerCompetencias,
   obtenerOpciones: obtenerOpciones,
@@ -170,5 +219,8 @@ module.exports = {
   obtenerResultados: obtenerResultados,
   crearCompetencia: crearCompetencia,
   eliminarCompetencia: eliminarCompetencia,
-  eliminarVotos: eliminarVotos
+  eliminarVotos: eliminarVotos,
+  obtenerGeneros: obtenerGeneros,
+  obtenerDirectores: obtenerDirectores,
+  obtenerActores: obtenerActores
 };
