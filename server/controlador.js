@@ -203,8 +203,22 @@ function eliminarVotos(id, res) {
     });
   });
 }
-function editarCompetencia(id,res){
-
+function editarCompetencia(req, res) {
+  var id = req.params.id;
+  var verifComp = "SELECT * FROM competicion where id=" + id + ";";
+  conDb.query(verifComp, function(error, resultVerif) {
+    if (resultVerif.length == 0) {
+      return res.status(404).json("La competencia no existe");
+    }
+    var nombre = req.body.nombre;
+    sqlEditar ="UPDATE competicion SET nombre='" + nombre + "' where id=" + id + ";";
+    conDb.query(sqlEditar, function(error, resp) {
+      if (error) {
+        return res.status(500);
+      }
+      res.status(200);
+    });
+  });
 }
 function obtenerGeneros(req, res) {
   sql = "SELECT * FROM genero ORDER BY nombre;";

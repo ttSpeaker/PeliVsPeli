@@ -42,6 +42,9 @@ app.delete("/competencias/:id/votos", function(req, res) {
   var id = req.params.id;
   controlador.eliminarVotos(id, res);
 });
+app.put("/competencias/:id",function(req,res){
+  controlador.editarCompetencia(req, res);
+});
 var puerto = "8080";
 
 app.listen(puerto, function() {
