@@ -27,6 +27,10 @@ app.get("/competencias/:id/resultados", function(req, res) {
 app.get("/generos", controlador.obtenerGeneros);
 app.get("/directores", controlador.obtenerDirectores);
 app.get("/actores", controlador.obtenerActores);
+app.get("/competencias/:id", function(req, res){
+    var id = req.params.id;
+    controlador.obtenerCompetencia(id,res);
+});
 app.post("/competencias", function(req, res) {
   controlador.crearCompetencia(req.body, res);
 });

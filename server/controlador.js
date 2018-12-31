@@ -1,4 +1,5 @@
 var conDb = require("./conexionDb.js");
+
 function obtenerCompetencias(req, res) {
   var sqlQuery = "select id, nombre from competicion";
   conDb.query(sqlQuery, function(error, resp) {
@@ -167,7 +168,25 @@ function crearCompetencia(params, res) {
   });
 }
 function eliminarCompetencia(id, res) {
-  res.status(404);
+  var verifComp = "SELECT * FROM competicion where id=" + id + ";";
+  conDb.query(verifComp, function(error, resultVerif) {
+    if (resultVerif.length == 0) {
+      return res.status(404).json("La competencia no existe");
+    }
+    sqlEliminar = "DELETE FROM votos_pelicula where competencia_id=" + id + ";";
+    conDb.query(sqlEliminar, function(error, respVotos) {
+      if (error) {
+        return res.status(500);
+      }
+      var sql = "DELETE FROM competicion where id =" + id + ";";
+      conDb.query(sql, function(error, respCompetiencia) {
+        if (error) {
+          return res.status(500);
+        }
+        res.status(200);
+      });
+    });
+  });
 }
 function eliminarVotos(id, res) {
   var verifComp = "SELECT * FROM competicion where id=" + id + ";";
@@ -183,6 +202,9 @@ function eliminarVotos(id, res) {
       res.status(200);
     });
   });
+}
+function editarCompetencia(id,res){
+
 }
 function obtenerGeneros(req, res) {
   sql = "SELECT * FROM genero ORDER BY nombre;";
@@ -212,6 +234,41 @@ function obtenerActores(req, res) {
     res.send(resp);
   });
 }
+function obtenerCompetencia(id, res) {
+  var sql = "SELECT * FROM competicion where id=" + id + ";";
+  conDb.query(sql, function(error, result) {
+    if (error) {
+      return res.status(500);
+    }
+    if (result.length == 0) {
+      return res.status(404).json("La competencia no existe");
+    }
+    var sqlColumns = "SELECT c.id as id, c.nombre as nombre";
+    var sqlTables = " FROM competicion c";
+    if (result[0].actor_id) {
+      sqlColumns = sqlColumns.concat(", a.nombre as actor_nombre");
+      sqlTables = sqlTables.concat(" JOIN actor a ON a.id=c.actor_id");
+    }
+    if (result[0].genero_id) {
+      sqlColumns = sqlColumns.concat(", g.nombre as genero_nombre");
+      sqlTables = sqlTables.concat(" JOIN genero g ON g.id=c.genero_id");
+    }
+    if (result[0].director) {
+      sqlColumns = sqlColumns.concat(", d.nombre as director_nombre");
+      sqlTables = sqlTables.concat(" JOIN director d ON c.director=d.id");
+    }
+    var sqlCompetencia = sqlColumns.concat(
+      sqlTables + " WHERE c.id=" + id + ";"
+    );
+    conDb.query(sqlCompetencia, function(error, resultComp) {
+      if (error) {
+        return res.status(500);
+      }
+      res.send(resultComp[0]);
+    });
+  });
+}
+
 module.exports = {
   obtenerCompetencias: obtenerCompetencias,
   obtenerOpciones: obtenerOpciones,
@@ -222,5 +279,7 @@ module.exports = {
   eliminarVotos: eliminarVotos,
   obtenerGeneros: obtenerGeneros,
   obtenerDirectores: obtenerDirectores,
-  obtenerActores: obtenerActores
+  obtenerActores: obtenerActores,
+  obtenerCompetencia: obtenerCompetencia,
+  editarCompetencia: editarCompetencia
 };
